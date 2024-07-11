@@ -36,7 +36,7 @@ func newServer() *server {
 }
 
 type payload struct {
-	username string
+	Username string
 	jwt.StandardClaims
 }
 
@@ -48,11 +48,12 @@ func (s *server) ValidateToken(ctx context.Context, req *grpcjwt.Token) (*grpcjw
 
 func (s *server) Login(ctx context.Context, req *grpcjwt.LoginRequest) (*grpcjwt.LoginResponse, error) {
 	payload := &payload{
-		username: req.GetUsername(),
+		Username: req.GetUsername(),
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 		},
 	}
+	fmt.Println("payload: ", payload.Username, payload.ExpiresAt)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
 	accessToken, err := token.SignedString([]byte(key))
@@ -113,7 +114,7 @@ func jwtUnaryInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryS
 		return nil, status.Error(codes.Unauthenticated, "token is not valid")
 	}
 
-	fmt.Println("payload: ", payload)
+	fmt.Println("payload: ", payload.Username, payload.ExpiresAt)
 
 	return handler(ctx, req)
 }
