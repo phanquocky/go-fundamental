@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package grpc.protobuf;
+
+option go_package = "github.com/soypat/grpc/protobuf";
+
+message Request { //protoc --go_out=./code-gen --go_opt=paths=source_relative  protobuf.proto 
+  string message = 2;
+  int32 code = 3;
+  string status = 4;
+  string description = 5;
+  string metadata = 6;
+  string data = 7;
+}
